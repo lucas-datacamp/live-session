@@ -6,6 +6,9 @@
 	// to install against Astro 6.
 	"name": "vibe-design-system",
 	"compatibility_date": "2026-06-22",
+	"build": {
+		"command": "npm run build"
+	},
 	"assets": {
 		"directory": "./dist"
 	}
