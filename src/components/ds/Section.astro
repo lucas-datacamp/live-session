@@ -3,63 +3,126 @@ interface Props {
   heading: string;
   lede?: string;
   id?: string;
+  index?: string;
+  variant?: "default" | "surface" | "inset";
   tight?: boolean;
   class?: string;
 }
 
-const { heading, lede, id, tight = false, class: className = "" } = Astro.props;
+const {
+  heading,
+  lede,
+  id,
+  index,
+  variant = "default",
+  tight = false,
+  class: className = "",
+} = Astro.props;
 
-const classes = ["ds-section", tight ? "ds-section--tight" : "", className]
+const classes = [
+  "ds-section",
+  `ds-section--${variant}`,
+  tight ? "ds-section--tight" : "",
+  className,
+]
   .filter(Boolean)
   .join(" ");
 ---
 
 <section class={classes} id={id}>
-  <div class="ds-section__header">
-    <h2 class="ds-section__heading">{heading}</h2>
-    {lede && <p class="ds-section__lede">{lede}</p>}
-  </div>
-  <div class="ds-section__content">
-    <slot />
+  <div class="ds-section__container">
+    <header class="ds-section__header">
+      {index && <span class="ds-section__index">{index}</span>}
+      <div class="ds-section__titles">
+        <h2 class="ds-section__heading">{heading}</h2>
+        {lede && <p class="ds-section__lede">{lede}</p>}
+      </div>
+    </header>
+    <div class="ds-section__content">
+      <slot />
+    </div>
   </div>
 </section>
 
 <style>
   .ds-section {
-    padding-top: var(--space-2xl);
-    padding-bottom: var(--space-2xl);
+    padding-block: var(--space-2xl);
   }
 
   .ds-section--tight {
-    padding-top: var(--space-xl);
-    padding-bottom: var(--space-xl);
+    padding-block: var(--space-xl);
+  }
+
+  .ds-section--surface {
+    background-color: color-mix(in oklch, var(--color-surface) 88%, var(--color-bg));
+    border-block: 1px solid var(--color-line);
+  }
+
+  .ds-section--inset {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in oklch, var(--color-primary) 4%, var(--color-bg)) 0%,
+        var(--color-bg) 100%
+      );
+    border-block: 1px solid var(--color-line);
+  }
+
+  .ds-section__container {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding-inline: var(--space-lg);
   }
 
   .ds-section__header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-md) var(--space-lg);
+    align-items: start;
     margin-bottom: var(--space-xl);
   }
 
-  .ds-section__heading {
-    font-size: var(--text-subheading);
+  .ds-section__index {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-pill);
     font-family: var(--font-body);
+    font-size: var(--text-caption);
     font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-muted);
+    letter-spacing: 0.04em;
+    color: var(--color-bg);
+    background-color: var(--color-primary);
+  }
+
+  .ds-section__titles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .ds-section__heading {
+    font-family: var(--font-display);
+    font-size: var(--text-heading);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-transform: none;
+    color: var(--color-ink);
     margin: 0;
   }
 
   .ds-section__lede {
     font-size: var(--text-secondary);
     color: var(--color-muted);
-    max-width: 55ch;
+    max-width: 58ch;
     margin: 0;
   }
 
-  .ds-section__content {
-    /* content fills its natural width */
+  @media (max-width: 40rem) {
+    .ds-section__header {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

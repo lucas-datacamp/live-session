@@ -2,58 +2,89 @@
 interface Props {
   name: string;
   token: string;
-  light?: boolean;
+  role?: string;
   class?: string;
 }
 
-const { name, token, light = false, class: className = "" } = Astro.props;
+const { name, token, role, class: className = "" } = Astro.props;
 
-const classes = ["ds-swatch", light ? "ds-swatch--light" : "", className]
-  .filter(Boolean)
-  .join(" ");
+const classes = ["ds-swatch", className].filter(Boolean).join(" ");
 ---
 
-<div class={classes}>
-  <div class="ds-swatch__chip" style={`background: var(${token})`}></div>
+<article class={classes}>
+  <div class="ds-swatch__chip" style={`background: var(${token})`}>
+    <span class="ds-swatch__shine" aria-hidden="true"></span>
+  </div>
   <div class="ds-swatch__meta">
     <span class="ds-swatch__name">{name}</span>
+    {role && <span class="ds-swatch__role">{role}</span>}
     <span class="ds-swatch__token">{token}</span>
   </div>
-</div>
+</article>
 
 <style>
   .ds-swatch {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
+    gap: 0;
     border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     background-color: var(--color-bg);
+    transition:
+      transform var(--duration-fast) var(--ease-snap),
+      box-shadow var(--duration-normal) var(--ease-out-quart),
+      border-color var(--duration-normal) var(--ease-out-quart);
+  }
+
+  .ds-swatch:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+    border-color: color-mix(in oklch, var(--color-primary) 25%, var(--color-line));
   }
 
   .ds-swatch__chip {
-    height: 4rem;
+    position: relative;
+    height: 5.5rem;
     width: 100%;
+  }
+
+  .ds-swatch__shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      145deg,
+      oklch(1 0 0 / 0.28) 0%,
+      transparent 45%
+    );
+    pointer-events: none;
   }
 
   .ds-swatch__meta {
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
-    padding: var(--space-xs) var(--space-sm) var(--space-sm);
+    gap: 0.15rem;
+    padding: var(--space-sm) var(--space-md) var(--space-md);
+    border-top: 1px solid var(--color-line);
+    background: color-mix(in oklch, var(--color-bg) 90%, var(--color-surface));
   }
 
   .ds-swatch__name {
-    font-family: var(--font-body);
-    font-size: var(--text-caption);
+    font-family: var(--font-display);
+    font-size: var(--text-secondary);
     font-weight: 600;
     color: var(--color-ink);
   }
 
+  .ds-swatch__role {
+    font-size: var(--text-caption);
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
   .ds-swatch__token {
     font-family: ui-monospace, "Cascadia Code", "Source Code Pro", monospace;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--color-muted);
     word-break: break-all;
   }

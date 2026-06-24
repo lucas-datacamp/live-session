@@ -53,23 +53,26 @@ const wrapperClasses = ["ds-input-wrap", className].filter(Boolean).join(" ");
   }
 
   .ds-input__label {
-    font-size: var(--text-secondary);
-    color: var(--color-ink);
-    font-weight: 500;
+    font-size: var(--text-caption);
+    color: var(--color-muted);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .ds-input__field {
     font-family: var(--font-body);
     font-size: var(--text-body);
     color: var(--color-ink);
-    background-color: var(--color-bg);
+    background-color: var(--color-surface);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-md);
     padding: var(--space-sm) var(--space-md);
     width: 100%;
     transition:
       border-color var(--duration-fast) var(--ease-out-quart),
-      box-shadow var(--duration-fast) var(--ease-out-quart);
+      box-shadow var(--duration-fast) var(--ease-out-quart),
+      background-color var(--duration-fast) var(--ease-out-quart);
   }
 
   .ds-input__field::placeholder {
@@ -77,21 +80,24 @@ const wrapperClasses = ["ds-input-wrap", className].filter(Boolean).join(" ");
   }
 
   .ds-input__field:hover {
-    border-color: var(--color-muted);
+    border-color: color-mix(in oklch, var(--color-primary) 30%, var(--color-line));
+    background-color: var(--color-bg);
   }
 
   .ds-input__field:focus {
     outline: none;
-    border-color: var(--color-focus);
-    box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-focus) 25%, transparent);
+    border-color: var(--color-primary);
+    background-color: var(--color-bg);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 18%, transparent);
   }
 
   .ds-input__field[aria-invalid="true"] {
     border-color: var(--color-error);
+    background-color: color-mix(in oklch, var(--color-error) 4%, var(--color-bg));
   }
 
   .ds-input__field[aria-invalid="true"]:focus {
-    box-shadow: 0 0 0 2px color-mix(in oklch, var(--color-error) 20%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-error) 16%, transparent);
   }
 
   .ds-input__helper {
@@ -102,5 +108,6 @@ const wrapperClasses = ["ds-input-wrap", className].filter(Boolean).join(" ");
   .ds-input__error {
     font-size: var(--text-caption);
     color: var(--color-error);
+    font-weight: 500;
   }
 </style>

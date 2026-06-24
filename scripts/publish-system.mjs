@@ -15,6 +15,7 @@
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const ROOT = process.cwd();
 const PUBLIC = join(ROOT, "public");
@@ -23,7 +24,7 @@ const SITE_URL = (process.env.SITE_URL || process.env.CF_PAGES_URL || "https://v
 const VERSION = "v1";
 
 /** Parse the @theme block of global.css into grouped tokens. */
-function readTokens() {
+export function readTokens() {
 	const css = readFileSync(join(ROOT, "src/styles/global.css"), "utf8");
 	const theme = css.match(/@theme\s*\{([^}]*)\}/s);
 	if (!theme) throw new Error("No @theme block found in src/styles/global.css");
@@ -42,7 +43,7 @@ function readTokens() {
 }
 
 /** Re-emit the tokens as a portable :root block. */
-function tokensCss({ groups }) {
+export function tokensCss({ groups }) {
 	const lines = [":root {"];
 	for (const [group, entries] of Object.entries(groups)) {
 		for (const [key, value] of Object.entries(entries)) {
@@ -59,7 +60,7 @@ function readDoc(file) {
 	return existsSync(path) ? readFileSync(path, "utf8").trim() : null;
 }
 
-function systemMd(tokens) {
+export function buildSystemMd(tokens) {
 	const product = readDoc("PRODUCT.md");
 	const design = readDoc("DESIGN.md");
 
@@ -111,7 +112,7 @@ function systemMd(tokens) {
 	return parts.join("\n");
 }
 
-function llmsTxt() {
+export function buildLlmsTxt() {
 	return [
 		`# ${NAME}`,
 		"",
@@ -146,30 +147,31 @@ function llmsTxt() {
 	].join("\n");
 }
 
-function main() {
-	if (!existsSync(PUBLIC)) mkdirSync(PUBLIC, { recursive: true });
+/** Build all agent-layer artifacts from live tokens + design context. */
+export function buildAgentLayer() {
 	const tokens = readTokens();
-
 	const json = { name: NAME, ...Object.fromEntries(tokens.order.map((g) => [g, tokens.groups[g]])) };
-	const jsonStr = JSON.stringify(json, null, 2) + "\n";
-	const cssStr = tokensCss(tokens);
-	const systemStr = systemMd(tokens);
-	const llmsStr = llmsTxt();
 
-	// Root files
-	writeFileSync(join(PUBLIC, "tokens.json"), jsonStr);
-	writeFileSync(join(PUBLIC, "tokens.css"), cssStr);
-	writeFileSync(join(PUBLIC, "system.md"), systemStr);
-	writeFileSync(join(PUBLIC, "llms.txt"), llmsStr);
+	return {
+		tokens,
+		tokensJson: JSON.stringify(json, null, 2) + "\n",
+		tokensCss: tokensCss(tokens),
+		systemMd: buildSystemMd(tokens),
+		llmsTxt: buildLlmsTxt(),
+	};
+}
 
-	// Versioned copies: public/v1/
+/** Write agent-layer artifacts to public/v1/ (and versioned skill). Root URLs are served by Astro routes in src/pages/*.ts */
+export function writeAgentLayer({ tokensJson, tokensCss: cssStr, systemMd: systemStr, llmsTxt: llmsStr }) {
+	if (!existsSync(PUBLIC)) mkdirSync(PUBLIC, { recursive: true });
+
 	const V1 = join(PUBLIC, VERSION);
 	mkdirSync(V1, { recursive: true });
-	writeFileSync(join(V1, "tokens.json"), jsonStr);
+	writeFileSync(join(V1, "tokens.json"), tokensJson);
 	writeFileSync(join(V1, "tokens.css"), cssStr);
 	writeFileSync(join(V1, "system.md"), systemStr);
+	writeFileSync(join(V1, "llms.txt"), llmsStr);
 
-	// Installable hosted skill: public/v1/skills/apply-system.md
 	const skillsSrc = join(ROOT, ".claude/skills/apply-system/SKILL.md");
 	const skillsDir = join(V1, "skills");
 	mkdirSync(skillsDir, { recursive: true });
@@ -180,10 +182,18 @@ function main() {
 			.replace(/public\/tokens\.json/g, `${SITE_URL}/${VERSION}/tokens.json`)
 			.replace(/public\/system\.md/g, `${SITE_URL}/${VERSION}/system.md`);
 	writeFileSync(join(skillsDir, "apply-system.md"), hostedSkill);
-
-	const count = tokens.order.reduce((n, g) => n + Object.keys(tokens.groups[g]).length, 0);
-	console.log(`publish-system: wrote tokens.json, tokens.css, system.md, llms.txt (${count} tokens, groups: ${tokens.order.join(", ")})`);
-	console.log(`publish-system: version=${VERSION} site=${SITE_URL} — wrote public/${VERSION}/ (tokens.json, tokens.css, system.md, skills/apply-system.md)`);
 }
 
-main();
+export function publishAgentLayer() {
+	const layer = buildAgentLayer();
+	writeAgentLayer(layer);
+
+	const count = layer.tokens.order.reduce((n, g) => n + Object.keys(layer.tokens.groups[g]).length, 0);
+	console.log(`publish-system: ${count} tokens (groups: ${layer.tokens.order.join(", ")})`);
+	console.log(`publish-system: wrote public/${VERSION}/ (tokens.json, tokens.css, system.md, llms.txt, skills/apply-system.md)`);
+	console.log("publish-system: root /tokens.json, /system.md, /llms.txt, /tokens.css are served by Astro routes (src/pages/*.ts)");
+	return layer;
+}
+
+const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+if (isMain) publishAgentLayer();

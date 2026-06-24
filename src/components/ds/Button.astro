@@ -1,6 +1,6 @@
 ---
 interface Props {
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "accent";
   size?: "sm" | "md" | "lg";
   href?: string;
   disabled?: boolean;
@@ -52,12 +52,14 @@ const Tag = href ? "a" : "button";
     line-height: 1;
     text-decoration: none;
     border: 1px solid transparent;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-pill);
     cursor: pointer;
     transition:
       background-color var(--duration-fast) var(--ease-out-quart),
       border-color var(--duration-fast) var(--ease-out-quart),
-      color var(--duration-fast) var(--ease-out-quart);
+      color var(--duration-fast) var(--ease-out-quart),
+      box-shadow var(--duration-fast) var(--ease-out-quart),
+      transform var(--duration-fast) var(--ease-snap);
     white-space: nowrap;
   }
 
@@ -68,7 +70,6 @@ const Tag = href ? "a" : "button";
     pointer-events: none;
   }
 
-  /* Sizes */
   .ds-btn--sm {
     font-size: var(--text-caption);
     padding: var(--space-xs) var(--space-sm);
@@ -84,26 +85,53 @@ const Tag = href ? "a" : "button";
     padding: var(--space-md) var(--space-lg);
   }
 
-  /* Variants */
   .ds-btn--primary {
     background-color: var(--color-primary);
     border-color: var(--color-primary);
     color: var(--color-bg);
+    box-shadow: 0 1px 0 oklch(1 0 0 / 0.12) inset;
   }
 
   .ds-btn--primary:hover:not(:disabled) {
     background-color: var(--color-primary-hover);
     border-color: var(--color-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .ds-btn--primary:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  .ds-btn--accent {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary) 0%,
+      var(--color-accent) 100%
+    );
+    border-color: transparent;
+    color: var(--color-accent-ink);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .ds-btn--accent:hover:not(:disabled) {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+  }
+
+  .ds-btn--accent:active:not(:disabled) {
+    transform: scale(0.98);
   }
 
   .ds-btn--secondary {
-    background-color: var(--color-surface);
+    background-color: var(--color-bg);
     border-color: var(--color-line);
     color: var(--color-ink);
   }
 
   .ds-btn--secondary:hover:not(:disabled) {
-    background-color: var(--color-line);
+    border-color: color-mix(in oklch, var(--color-primary) 35%, var(--color-line));
+    background-color: color-mix(in oklch, var(--color-primary) 5%, var(--color-bg));
   }
 
   .ds-btn--ghost {
@@ -113,6 +141,6 @@ const Tag = href ? "a" : "button";
   }
 
   .ds-btn--ghost:hover:not(:disabled) {
-    background-color: var(--color-surface);
+    background-color: color-mix(in oklch, var(--color-primary) 8%, var(--color-surface));
   }
 </style>

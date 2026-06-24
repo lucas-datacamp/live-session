@@ -7,184 +7,307 @@ import Input from "../components/ds/Input.astro";
 import ColorSwatch from "../components/ds/ColorSwatch.astro";
 import Section from "../components/ds/Section.astro";
 
+const navLinks = [
+  { href: "#colors", label: "Colors" },
+  { href: "#type", label: "Type" },
+  { href: "#components", label: "Components" },
+  { href: "#agents", label: "Agents" },
+];
+
 const swatches = [
-  { name: "Background",     token: "--color-bg" },
-  { name: "Surface",        token: "--color-surface" },
-  { name: "Ink",            token: "--color-ink" },
-  { name: "Muted",          token: "--color-muted" },
-  { name: "Line",           token: "--color-line" },
-  { name: "Primary",        token: "--color-primary" },
-  { name: "Accent",         token: "--color-accent" },
-  { name: "Coral",          token: "--color-coral" },
-  { name: "Green",          token: "--color-green" },
+  { name: "Dawn White", token: "--color-bg", role: "Canvas" },
+  { name: "Sea Mist", token: "--color-surface", role: "Surface" },
+  { name: "Deep Ink", token: "--color-ink", role: "Text" },
+  { name: "Sage Muted", token: "--color-muted", role: "Secondary" },
+  { name: "Tide Line", token: "--color-line", role: "Border" },
+  { name: "Turquoise Teal", token: "--color-primary", role: "Primary" },
+  { name: "Aurora Violet", token: "--color-accent", role: "Accent" },
+  { name: "Warm Coral", token: "--color-coral", role: "Warmth" },
+  { name: "Botanical", token: "--color-green", role: "Nature" },
 ];
 
 const typeRows = [
-  { label: "Display",    cls: "text-display",    tag: "span", sample: "The quick brown fox" },
-  { label: "Heading",    cls: "text-heading",    tag: "span", sample: "The quick brown fox jumps" },
-  { label: "Subheading", cls: "text-subheading", tag: "span", sample: "The quick brown fox jumps over the lazy dog" },
-  { label: "Body",       cls: "text-body",       tag: "span", sample: "The quick brown fox jumps over the lazy dog. Sphinx of black quartz, judge my vow." },
-  { label: "Secondary",  cls: "text-secondary",  tag: "span", sample: "The quick brown fox jumps over the lazy dog. Sphinx of black quartz, judge my vow." },
-  { label: "Caption",    cls: "text-caption",    tag: "span", sample: "The quick brown fox jumps over the lazy dog. Sphinx of black quartz, judge my vow." },
+  { label: "Display", cls: "text-display", sample: "Electric light on an open coast" },
+  { label: "Heading", cls: "text-heading", sample: "Turquoise clarity, one violet punch" },
+  { label: "Subheading", cls: "text-subheading", sample: "Balanced density with room to breathe" },
+  { label: "Body", cls: "text-body", sample: "Open, easy, optimistic interfaces. Precise like Polestar, hospitable like Airbnb." },
+  { label: "Secondary", cls: "text-secondary", sample: "Soft fades for layout. Snappy feedback on every click and toggle." },
+  { label: "Caption", cls: "text-caption", sample: "AURORA DAY · DESIGN TOKENS · OUTFIT" },
+];
+
+const agentLinks = [
+  {
+    href: "/tokens.json",
+    label: "tokens.json",
+    desc: "Flat JSON of every CSS variable. Drop straight into agent context.",
+  },
+  {
+    href: "/system.md",
+    label: "system.md",
+    desc: "Markdown reference with token tables, component props, and usage rules.",
+  },
+  {
+    href: "/llms.txt",
+    label: "llms.txt",
+    desc: "Plain-text summary in the llms.txt convention for LLM context windows.",
+  },
 ];
 ---
 
-<BaseLayout title="Design System" description="A neutral, token-driven design system showcase.">
+<BaseLayout title="Aurora Day — Design System" description="Light coastal clarity with turquoise-teal primary and aurora violet accents.">
 
-  <!-- Sticky header -->
   <header class="site-header">
     <div class="site-header__inner">
-      <span class="site-header__wordmark">Design System</span>
-      <nav class="site-header__nav" aria-label="Page sections">
-        <a href="#colors">Colors</a>
-        <a href="#type">Type</a>
-        <a href="#components">Components</a>
+      <a class="site-brand" href="#top" aria-label="Aurora Day — back to top">
+        <span class="site-brand__mark" aria-hidden="true"></span>
+        <span class="site-brand__text">
+          <span class="site-brand__name">Aurora Day</span>
+          <span class="site-brand__tag">Design System</span>
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="Page sections">
+        {navLinks.map((link) => (
+          <a class="site-nav__link" href={link.href} data-nav-link>
+            {link.label}
+          </a>
+        ))}
       </nav>
     </div>
   </header>
 
-  <main class="page-main">
+  <main class="page-main" id="top">
 
-    <!-- Hero -->
-    <div class="hero">
+    <section class="hero" aria-labelledby="hero-heading">
       <div class="hero__inner">
-        <p class="hero__caption text-caption text-muted">Neutral Canvas</p>
-        <h1 class="text-display hero__headline">
-          Tokens first.<br />Reskin everything.
+        <p class="hero__caption text-caption">Electric light on an open coast</p>
+        <h1 class="text-display hero__headline" id="hero-heading">
+          Open. Clear.<br />
+          <span class="hero__headline-accent">One electric hit.</span>
         </h1>
-        <p class="hero__lede text-secondary text-muted">
-          A blank-slate design system. Change the tokens in <code>global.css</code>
-          and every component reskins instantly — no component code touched.
+        <p class="hero__lede text-secondary">
+          Turquoise-teal for trust, aurora violet for punch. Warm daylight canvas, one token layer.
         </p>
+
         <div class="hero__actions">
-          <Button variant="primary" size="lg" href="#components">Browse components</Button>
-          <Button variant="ghost" size="lg" href="#colors">See tokens</Button>
+          <Button variant="accent" size="lg" href="#components">Browse components</Button>
+          <Button variant="secondary" size="lg" href="#colors">See palette</Button>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="content-wrap">
+    <Section
+      id="colors"
+      index="01"
+      variant="surface"
+      heading="Color palette"
+      lede="Nine semantic tokens on a warm daylight canvas. Teal leads; violet punctuates, never floods."
+    >
+      <div class="swatch-grid">
+        {swatches.map((s) => (
+          <ColorSwatch name={s.name} token={s.token} role={s.role} />
+        ))}
+      </div>
+    </Section>
 
-      <!-- Colors -->
-      <Section id="colors" heading="Color tokens" lede="Nine semantic color tokens cover every UI surface. Swap them and the entire system follows.">
-        <div class="swatch-grid">
-          {swatches.map((s) => (
-            <ColorSwatch name={s.name} token={s.token} />
-          ))}
+    <Section
+      id="type"
+      index="02"
+      variant="default"
+      heading="Typography"
+      lede="Outfit across the scale: geometric, confident, tight. Weight and size carry hierarchy."
+    >
+      <div class="type-panel">
+        {typeRows.map((row) => (
+          <div class="type-row">
+            <span class="type-row__label text-caption">{row.label}</span>
+            <span class={`type-row__sample font-display ${row.cls}`}>{row.sample}</span>
+          </div>
+        ))}
+      </div>
+    </Section>
+
+    <Section
+      id="components"
+      index="03"
+      variant="surface"
+      heading="Components"
+      lede="Pill actions, soft surfaces, botanical badges. Balanced density with coastal calm."
+    >
+      <div class="component-grid">
+
+        <div class="lane-card">
+          <div class="lane-card__head">
+            <span class="lane-card__dot lane-card__dot--teal" aria-hidden="true"></span>
+            <p class="lane-card__title">Actions</p>
+          </div>
+          <div class="lane-card__body lane-card__body--row">
+            <Button variant="primary">Primary</Button>
+            <Button variant="accent">Accent</Button>
+            <Button variant="secondary">Secondary</Button>
+            <Button variant="ghost">Ghost</Button>
+            <Button variant="primary" disabled>Disabled</Button>
+          </div>
         </div>
-      </Section>
 
-      <!-- Type -->
-      <Section id="type" heading="Type scale" lede="Six steps built on clamp() and rem. Display through Caption, all token-driven.">
-        <div class="type-panel">
-          {typeRows.map((row) => (
-            <div class="type-row">
-              <span class="type-row__label text-caption text-muted">{row.label}</span>
-              <span class={`type-row__sample font-display ${row.cls}`}>{row.sample}</span>
-            </div>
-          ))}
+        <div class="lane-card">
+          <div class="lane-card__head">
+            <span class="lane-card__dot lane-card__dot--violet" aria-hidden="true"></span>
+            <p class="lane-card__title">Status</p>
+          </div>
+          <div class="lane-card__body lane-card__body--row">
+            <Badge tone="neutral">Neutral</Badge>
+            <Badge tone="ocean">Ocean</Badge>
+            <Badge tone="gold">Aurora</Badge>
+            <Badge tone="green">Botanical</Badge>
+            <Badge tone="coral">Coral</Badge>
+          </div>
         </div>
-      </Section>
 
-      <!-- Components -->
-      <Section id="components" heading="Components" lede="Four lanes: actions, status badges, form inputs, and content surfaces.">
-        <div class="component-lanes">
-
-          <!-- Actions -->
-          <div class="lane">
-            <p class="lane__heading">Actions</p>
-            <div class="lane__items">
-              <Button variant="primary">Primary</Button>
-              <Button variant="secondary">Secondary</Button>
-              <Button variant="ghost">Ghost</Button>
-              <Button variant="primary" disabled>Disabled</Button>
-            </div>
+        <div class="lane-card lane-card--wide">
+          <div class="lane-card__head">
+            <span class="lane-card__dot lane-card__dot--teal" aria-hidden="true"></span>
+            <p class="lane-card__title">Forms</p>
           </div>
-
-          <!-- Status -->
-          <div class="lane">
-            <p class="lane__heading">Status</p>
-            <div class="lane__items lane__items--wrap">
-              <Badge tone="neutral">Neutral</Badge>
-              <Badge tone="ocean">Ocean</Badge>
-              <Badge tone="gold">Gold</Badge>
-              <Badge tone="green">Green</Badge>
-              <Badge tone="coral">Coral</Badge>
-            </div>
+          <div class="lane-card__body lane-card__body--col">
+            <Input
+              id="demo-name"
+              label="Full name"
+              type="text"
+              placeholder="Jane Smith"
+              helper="Used on your public profile."
+            />
+            <Input
+              id="demo-email"
+              label="Email address"
+              type="email"
+              placeholder="jane@example.com"
+              error="That email address is already taken."
+            />
           </div>
-
-          <!-- Forms -->
-          <div class="lane">
-            <p class="lane__heading">Forms</p>
-            <div class="lane__items lane__items--col">
-              <Input
-                id="demo-name"
-                label="Full name"
-                type="text"
-                placeholder="Jane Smith"
-                helper="Used on your public profile."
-              />
-              <Input
-                id="demo-email"
-                label="Email address"
-                type="email"
-                placeholder="jane@example.com"
-                error="That email address is already taken."
-              />
-            </div>
-          </div>
-
-          <!-- Surfaces -->
-          <div class="lane">
-            <p class="lane__heading">Surfaces</p>
-            <div class="lane__items lane__items--col">
-              <Card title="Default card">
-                This is the default card. It uses <code>--radius-lg</code> and
-                <code>--color-line</code> for its border.
-              </Card>
-              <Card title="Compact card" compact>
-                Same component, <code>compact</code> prop reduces padding.
-              </Card>
-            </div>
-          </div>
-
         </div>
-      </Section>
 
-      <!-- For agents -->
-      <Section heading="For agents" lede="AI tools and automated agents can consume this design system via structured endpoints.">
-        <p class="agent-intro text-secondary">
-          The following machine-readable files describe the complete token set, component API,
-          and usage conventions. Point your agent at these before generating UI.
+        <div class="lane-card lane-card--wide">
+          <div class="lane-card__head">
+            <span class="lane-card__dot lane-card__dot--violet" aria-hidden="true"></span>
+            <p class="lane-card__title">Surfaces</p>
+          </div>
+          <div class="lane-card__body lane-card__body--col">
+            <Card title="Default card" elevated>
+              Sea-mist surfaces with a tide-line border. Hover lifts with a soft coastal shadow.
+            </Card>
+            <Card title="Compact card" compact>
+              Same component — <code>compact</code> tightens padding for dense layouts.
+            </Card>
+          </div>
+        </div>
+
+      </div>
+    </Section>
+
+    <Section
+      id="agents"
+      index="04"
+      variant="inset"
+      heading="For agents"
+      lede="Machine-readable endpoints so AI tools stay on-brand when generating UI."
+    >
+      <div class="agent-panel">
+        <p class="agent-panel__intro text-secondary">
+          Point your agent at these before generating screens. Tokens, components, and rules,
+          structured for context windows.
         </p>
-        <ul class="agent-links">
-          <li>
-            <a href="/tokens.json"><code>/tokens.json</code></a>
-            — All design tokens as a flat JSON object, keyed by CSS variable name.
-          </li>
-          <li>
-            <a href="/system.md"><code>/system.md</code></a>
-            — Markdown reference: token table, component props, usage rules.
-          </li>
-          <li>
-            <a href="/llms.txt"><code>/llms.txt</code></a>
-            — Plain-text summary in the <a href="https://llmstxt.org">llms.txt</a> convention
-            for LLM context windows.
-          </li>
+        <ul class="agent-list">
+          {agentLinks.map((link) => (
+            <li>
+              <a class="agent-list__item" href={link.href}>
+                <span class="agent-list__label">
+                  <code>{link.label}</code>
+                  <span class="agent-list__arrow" aria-hidden="true">→</span>
+                </span>
+                <span class="agent-list__desc">{link.desc}</span>
+              </a>
+            </li>
+          ))}
         </ul>
-      </Section>
+      </div>
+    </Section>
 
-    </div>
   </main>
 
-  <!-- Footer -->
   <footer class="site-footer">
-    <p class="text-caption text-muted">Design System — neutral canvas, token-driven. Change tokens, reskin everything.</p>
+    <div class="site-footer__inner">
+      <div class="site-footer__brand">
+        <span class="site-brand__mark site-brand__mark--sm" aria-hidden="true"></span>
+        <div>
+          <p class="site-footer__name">Aurora Day</p>
+          <p class="site-footer__tagline text-caption text-muted">
+            Light coastal clarity · 90% neutral, 10% electric
+          </p>
+        </div>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="Footer">
+        {navLinks.map((link) => (
+          <a href={link.href}>{link.label}</a>
+        ))}
+      </nav>
+
+      <p class="site-footer__copy text-caption text-muted">
+        Token-driven showcase — change <code>global.css</code>, reskin everything.
+      </p>
+    </div>
   </footer>
 
 </BaseLayout>
 
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]");
+  const sections = [...links]
+    .map((link) => document.querySelector(link.getAttribute("href") ?? ""))
+    .filter((section): section is HTMLElement => section instanceof HTMLElement);
+
+  const setActive = (id: string) => {
+    links.forEach((link) => {
+      const active = link.getAttribute("href") === `#${id}`;
+      link.classList.toggle("is-active", active);
+      if (active) {
+        link.setAttribute("aria-current", "true");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible?.target.id) setActive(visible.target.id);
+    },
+    { rootMargin: "-35% 0px -55% 0px", threshold: [0, 0.25, 0.5] },
+  );
+
+  sections.forEach((section) => observer.observe(section));
+</script>
+
 <style>
+  /* ── Brand mark ── */
+  .site-brand__mark {
+    display: block;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .site-brand__mark--sm {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
   /* ── Header ── */
   .site-header {
     position: sticky;
@@ -198,43 +321,106 @@ const typeRows = [
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--space-md);
     max-width: 72rem;
     margin: 0 auto;
-    padding: var(--space-md) var(--space-lg);
+    padding: var(--space-sm) var(--space-lg);
   }
 
-  .site-header__wordmark {
+  .site-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;
+  }
+
+  .site-brand__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    min-width: 0;
+  }
+
+  .site-brand__name {
     font-family: var(--font-display);
     font-size: var(--text-subheading);
-    font-weight: 500;
+    font-weight: 600;
+    letter-spacing: -0.02em;
     color: var(--color-ink);
-    letter-spacing: -0.01em;
+    line-height: 1.1;
   }
 
-  .site-header__nav {
+  .site-brand__tag {
+    font-size: var(--text-caption);
+    color: var(--color-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .site-nav {
     display: flex;
-    gap: var(--space-lg);
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.2rem;
+    border-radius: var(--radius-pill);
+    background: color-mix(in oklch, var(--color-surface) 90%, var(--color-bg));
+    border: 1px solid var(--color-line);
   }
 
-  .site-header__nav a {
-    font-size: var(--text-secondary);
+  .site-nav__link {
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-pill);
+    font-size: var(--text-caption);
+    font-weight: 500;
     color: var(--color-muted);
     text-decoration: none;
-    transition: color var(--duration-fast) var(--ease-out-quart);
+    transition:
+      color var(--duration-fast) var(--ease-out-quart),
+      background-color var(--duration-fast) var(--ease-out-quart),
+      box-shadow var(--duration-fast) var(--ease-out-quart);
   }
 
-  .site-header__nav a:hover {
+  .site-nav__link:hover {
     color: var(--color-ink);
+    background: var(--color-bg);
   }
 
-  /* ── Layout shells ── */
+  .site-nav__link.is-active {
+    color: var(--color-bg);
+    background-color: var(--color-primary);
+  }
+
+  @media (max-width: 51.99rem) {
+    .site-header__inner {
+      flex-wrap: wrap;
+    }
+
+    .site-nav {
+      order: 3;
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .site-nav::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* ── Hero ── */
   .page-main {
-    min-height: calc(100dvh - 4rem);
+    min-height: calc(100dvh - 5rem);
   }
 
   .hero {
+    position: relative;
+    padding: clamp(3rem, 8vw, 6rem) var(--space-lg) clamp(3.5rem, 9vw, 6.5rem);
     border-bottom: 1px solid var(--color-line);
-    padding: var(--space-3xl) var(--space-lg);
+    background-color: var(--color-surface);
   }
 
   .hero__inner {
@@ -242,22 +428,37 @@ const typeRows = [
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: var(--space-lg);
+    align-items: flex-start;
+    gap: var(--space-md);
   }
 
   .hero__caption {
     margin: 0;
     max-width: none;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--color-primary);
+    font-weight: 600;
   }
 
   .hero__headline {
-    max-width: 18ch;
+    max-width: 14ch;
+    color: var(--color-ink);
+  }
+
+  .hero__headline-accent {
+    color: var(--color-primary);
+    font-weight: 700;
   }
 
   .hero__lede {
-    max-width: 52ch;
+    max-width: 54ch;
+    color: var(--color-muted);
+  }
+
+  .hero__lede,
+  .agent-panel__intro {
+    max-width: 54ch;
   }
 
   .hero__actions {
@@ -265,24 +466,19 @@ const typeRows = [
     flex-wrap: wrap;
     gap: var(--space-sm);
     align-items: center;
-  }
-
-  .content-wrap {
-    max-width: 72rem;
-    margin: 0 auto;
-    padding: 0 var(--space-lg);
+    margin-top: var(--space-md);
   }
 
   /* ── Color swatches ── */
   .swatch-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
     gap: var(--space-md);
   }
 
   /* ── Type specimen ── */
   .type-panel {
-    background-color: var(--color-surface);
+    background-color: var(--color-bg);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-lg);
     padding: var(--space-lg);
@@ -293,102 +489,245 @@ const typeRows = [
 
   .type-row {
     display: grid;
-    grid-template-columns: 7rem 1fr;
+    grid-template-columns: 6.5rem 1fr;
     align-items: baseline;
     gap: var(--space-md);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid color-mix(in oklch, var(--color-line) 70%, transparent);
+  }
+
+  .type-row:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
   }
 
   .type-row__label {
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
   }
 
   .type-row__sample {
     color: var(--color-ink);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
-  /* ── Component lanes ── */
-  .component-lanes {
+  @media (max-width: 40rem) {
+    .type-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-xs);
+    }
+  }
+
+  /* ── Component grid ── */
+  .component-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: var(--space-xl);
-    align-items: start;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md);
   }
 
-  .lane__heading {
-    font-family: var(--font-body);
-    font-size: var(--text-caption);
+  .lane-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-lift);
+    transition:
+      border-color var(--duration-normal) var(--ease-out-quart),
+      transform var(--duration-fast) var(--ease-snap);
+  }
+
+  .lane-card:hover {
+    border-color: color-mix(in oklch, var(--color-primary) 28%, var(--color-line));
+    transform: translateY(-2px);
+  }
+
+  .lane-card--wide {
+    grid-column: 1 / -1;
+  }
+
+  .lane-card__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .lane-card__dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: var(--radius-pill);
+    flex-shrink: 0;
+  }
+
+  .lane-card__dot--teal {
+    background: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary) 22%, transparent);
+  }
+
+  .lane-card__dot--violet {
+    background: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-accent) 22%, transparent);
+  }
+
+  .lane-card__title {
+    font-family: var(--font-display);
+    font-size: var(--text-subheading);
     font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-    margin: 0 0 var(--space-md) 0;
+    color: var(--color-ink);
+    margin: 0;
     max-width: none;
   }
 
-  .lane__items {
+  .lane-card__body--row {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-sm);
-    align-items: flex-start;
+    align-items: center;
   }
 
-  .lane__items--col {
-    flex-direction: column;
-  }
-
-  .lane__items--wrap {
-    flex-wrap: wrap;
-  }
-
-  /* ── Agent section ── */
-  .agent-intro {
-    margin-bottom: var(--space-md);
-    max-width: 60ch;
-  }
-
-  .agent-links {
+  .lane-card__body--col {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
-    padding-left: var(--space-lg);
+    gap: var(--space-md);
+  }
+
+  @media (max-width: 52rem) {
+    .component-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ── Agent panel ── */
+  .agent-panel {
+    background: var(--color-bg);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .agent-panel__intro {
+    margin-bottom: var(--space-lg);
+    color: var(--color-muted);
+  }
+
+  .agent-list {
+    list-style: none;
     margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
   }
 
-  .agent-links li {
+  .agent-list__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-line);
+    background: color-mix(in oklch, var(--color-surface) 50%, var(--color-bg));
+    text-decoration: none;
+    transition:
+      border-color var(--duration-fast) var(--ease-out-quart),
+      background-color var(--duration-fast) var(--ease-out-quart),
+      transform var(--duration-fast) var(--ease-snap);
+  }
+
+  .agent-list__item:hover {
+    border-color: color-mix(in oklch, var(--color-accent) 35%, var(--color-line));
+    background: var(--color-bg);
+    transform: translateX(4px);
+  }
+
+  .agent-list__label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+
+  .agent-list__arrow {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+
+  .agent-list__desc {
     font-size: var(--text-secondary);
     color: var(--color-muted);
   }
 
-  .agent-links code {
-    font-family: ui-monospace, "Cascadia Code", "Source Code Pro", monospace;
-    font-size: var(--text-caption);
-    color: var(--color-ink);
-  }
-
   /* ── Footer ── */
   .site-footer {
+    margin-top: var(--space-xl);
     border-top: 1px solid var(--color-line);
-    padding: var(--space-lg);
-    text-align: center;
+    background: color-mix(in oklch, var(--color-surface) 75%, var(--color-bg));
   }
 
-  .site-footer p {
+  .site-footer__inner {
+    max-width: 72rem;
     margin: 0 auto;
+    padding: var(--space-xl) var(--space-lg);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--space-lg) var(--space-xl);
+    align-items: start;
+  }
+
+  .site-footer__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .site-footer__name {
+    font-family: var(--font-display);
+    font-size: var(--text-subheading);
+    font-weight: 600;
+    margin: 0;
     max-width: none;
   }
 
-  /* ── code inline ── */
-  code {
-    font-family: ui-monospace, "Cascadia Code", "Source Code Pro", monospace;
-    font-size: 0.875em;
-    color: var(--color-ink);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-sm);
-    padding: 0.1em 0.35em;
+  .site-footer__tagline {
+    margin: 0.15rem 0 0;
+    max-width: none;
+  }
+
+  .site-footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-md);
+    justify-content: flex-end;
+  }
+
+  .site-footer__nav a {
+    font-size: var(--text-secondary);
+    color: var(--color-muted);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out-quart);
+  }
+
+  .site-footer__nav a:hover {
+    color: var(--color-primary);
+  }
+
+  .site-footer__copy {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-line);
+    max-width: none;
+  }
+
+  @media (max-width: 40rem) {
+    .site-footer__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .site-footer__nav {
+      justify-content: flex-start;
+    }
   }
 </style>
